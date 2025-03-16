@@ -130,3 +130,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
 ]
+
+FRONTEND_URL = 'http://localhost:4200'
+DEFAULT_FROM_EMAIL = 'deine_email@beispiel.com'
