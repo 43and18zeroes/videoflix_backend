@@ -1,21 +1,16 @@
 from rest_framework import serializers
 from user_auth_app.models import CustomUser
-
+import uuid
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'password')
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ('id', 'email')
 
     def create(self, validated_data):
-        password = validated_data.pop('password', None)
-        instance = self.Meta.model(**validated_data)
-        if password is not None:
-            instance.set_password(password)
-        instance.save()
-        return instance
+        email = validated_data['email']
+        username = f"{email.split('@')[0]}-{uuid.uuid4().hex[:6]}" # Eindeutigen Benutzernamen generieren
+        user = CustomUser.objects.create(email=email, username=username)
+        return user
 
 class EmailConfirmationSerializer(serializers.Serializer):
     token = serializers.UUIDField()
