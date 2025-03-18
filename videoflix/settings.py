@@ -147,4 +147,11 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 FRONTEND_URL = 'http://localhost:4200'
-DEFAULT_FROM_EMAIL = 'deine_email@beispiel.com'
+DEFAULT_FROM_EMAIL = 'videoflix@cw-coding.de'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'w01c0cb4.kasserver.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'videoflix@cw-coding.de'
+EMAIL_HOST_PASSWORD = '63lD!k4mp46n3'
