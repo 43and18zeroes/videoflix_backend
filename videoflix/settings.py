@@ -77,10 +77,25 @@ WSGI_APPLICATION = 'videoflix.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'videoflix_database',  # Ersetze durch deinen Datenbanknamen
+        'USER': 'postgres',  # Ersetze durch deinen Benutzernamen
+        'PASSWORD': 'n1n3!Cl34n1n6',  # Ersetze durch dein Passwort
+        'HOST': 'localhost',  # Oder die IP-Adresse des PostgreSQL-Servers
+        'PORT': '5432',  # Standard-PostgreSQL-Port
+        'OPTIONS': {
+            'client_encoding': 'UTF8',
+        }
     }
 }
 
