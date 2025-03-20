@@ -12,14 +12,6 @@ def register_user(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
-        confirmation_link = f"{settings.FRONTEND_URL}/signup/{user.confirmation_token}"
-        send_mail(
-            'E-Mail-Bestätigung',
-            f'Bitte klicke auf den folgenden Link, um deine E-Mail-Adresse zu bestätigen: {confirmation_link}',
-            settings.DEFAULT_FROM_EMAIL,
-            [user.email],
-            fail_silently=False,
-        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
