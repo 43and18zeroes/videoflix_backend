@@ -23,5 +23,5 @@ def confirm_email(request):
         user = get_object_or_404(CustomUser, confirmation_token=token)
         user.email_confirmed = True
         user.save()
-        return Response({'message': 'E-Mail bestätigt'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Email confirmed'}, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
