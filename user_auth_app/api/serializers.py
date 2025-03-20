@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from user_auth_app.models import CustomUser
+from rest_framework import serializers
 import uuid
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,3 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class EmailConfirmationSerializer(serializers.Serializer):
     token = serializers.UUIDField()
+    
+class SetPasswordSerializer(serializers.Serializer):
+    token = serializers.CharField(max_length=255)
+    password = serializers.CharField(max_length=128)
