@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import make_password
+from rest_framework_simplejwt.tokens import RefreshToken
 
 @api_view(['POST'])
 def register_user(request):
@@ -36,5 +37,9 @@ def set_password(request):
         user = get_object_or_404(CustomUser, confirmation_token=token)
         user.password = make_password(password)
         user.save()
-        return Response({'message': 'Password set successfully'}, status=status.HTTP_200_OK)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
