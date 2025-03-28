@@ -22,24 +22,36 @@ def send_confirmation_email(sender, instance, created, **kwargs):
   <head>
     <title>Confirm your email</title>
   </head>
-  <body style="color: #000;">
-    <header style="display: flex; justify-content: center;">
-      <img
-        src="http://videoflix.cw-coding.de/mail_logo/videoflix-logo.png"
-        alt="Videoflix Logo"
-      />
-    </header>
+  <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333333; background-color: #ffffff; padding: 20px;">
+    <img
+      src="http://videoflix.cw-coding.de/mail_logo/videoflix-logo.png"
+      alt="Videoflix Logo"
+      style="max-width: 200px; height: auto; margin-bottom: 20px;"
+    />
+
     <p>
       Thank you for registering with
-      <a href="https://videoflix.cw-coding.de" target="_blank">Videoflix</a>. To
+      <a href="https://videoflix.cw-coding.de" target="_blank" style="color: #1a73e8; text-decoration: none;">Videoflix</a>. To
       complete your registration and verify your email address, please click the
       link below:
     </p>
-    <button href="{confirmation_link}"
-      style="font-weight: 700; font-size: 18px; letter-spacing: 0.75px; color: white; background-color: #2e3edf; padding: 12px 24px; border: 0; border-radius: 50px; white-space: nowrap; cursor: pointer;"
+
+    <a
+      href="{confirmation_link}"
+      style="
+        display: inline-block;
+        padding: 12px 20px;
+        background-color: #1a73e8;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        margin: 20px 0;
+      "
     >
       Activate account
-    </button>
+    </a>
+
     <p>
       If you did not create an account with us, please disregard this email.
     </p>
@@ -47,7 +59,6 @@ def send_confirmation_email(sender, instance, created, **kwargs):
     <p>Your Videoflix Team.</p>
   </body>
 </html>
-
         """
         text_message = f"Please click on the following link to confirm your email address: {confirmation_link}"
         send_mail(
