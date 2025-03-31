@@ -53,12 +53,13 @@ class LoginView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-
+        print(serializer)
         user = authenticate(
             request,
             email=serializer.validated_data['email'],
             password=serializer.validated_data['password']
         )
+        print(user)
 
         if user is not None:
             refresh = RefreshToken.for_user(user)
