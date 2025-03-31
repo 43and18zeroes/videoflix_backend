@@ -19,3 +19,7 @@ class EmailConfirmationSerializer(serializers.Serializer):
 class SetPasswordSerializer(serializers.Serializer):
     token = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=128)
+    
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
