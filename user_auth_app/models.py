@@ -8,6 +8,9 @@ class CustomUser(AbstractUser):
     """
     email_confirmed = models.BooleanField(default=False)
     confirmation_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     groups = models.ManyToManyField(
         'auth.Group',
