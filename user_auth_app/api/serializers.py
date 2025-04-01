@@ -9,8 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         email = validated_data['email']
-        username = f"{email.split('@')[0]}-{uuid.uuid4().hex[:6]}" # Eindeutigen Benutzernamen generieren
-        user = CustomUser.objects.create(email=email, username=username)
+        user = CustomUser.objects.create(email=email, username=email)
         return user
 
 class EmailConfirmationSerializer(serializers.Serializer):
