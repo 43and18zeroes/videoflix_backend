@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
     'corsheaders',
     'rest_framework_simplejwt',
     'user_auth_app',
@@ -160,14 +162,20 @@ EMAIL_HOST_PASSWORD = '63lD!k4mp46n3'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ],
 }
 
 SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=36500),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=36500),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=36500),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=36500),
+}
+
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_COOKIE": "_auth",  # Name of access token cookie
+    "JWT_AUTH_REFRESH_COOKIE": "_refresh", # Name of refresh token cookie
+    "JWT_AUTH_HTTPONLY": False,  # Makes sure refresh token is sent
 }
 
 AUTHENTICATION_BACKENDS = [
