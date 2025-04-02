@@ -181,3 +181,5 @@ REST_AUTH = {
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+AUTH_USER_MODEL = 'user_auth_app.CustomUser'

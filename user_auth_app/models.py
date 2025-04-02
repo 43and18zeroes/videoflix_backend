@@ -6,6 +6,7 @@ class CustomUser(AbstractUser):
     """
     Erweiterung des Standard-Benutzermodells von Django.
     """
+    email = models.EmailField(unique=True)
     email_confirmed = models.BooleanField(default=False)
     confirmation_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     
