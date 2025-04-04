@@ -182,5 +182,5 @@ AUTHENTICATION_BACKENDS = [
 AUTH_USER_MODEL = 'user_auth_app.CustomUser'
 
 REST_AUTH_SERIALIZERS = {
-    'PASSWORD_RESET_SERIALIZER': 'your_app.serializers.CustomPasswordResetSerializer',
+    'PASSWORD_RESET_SERIALIZER': 'user_auth_app.api.serializers.CustomPasswordResetSerializer',
 }
