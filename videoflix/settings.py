@@ -184,30 +184,3 @@ AUTH_USER_MODEL = 'user_auth_app.CustomUser'
 REST_AUTH_SERIALIZERS = {
     'PASSWORD_RESET_SERIALIZER': 'user_auth_app.api.serializers.CustomPasswordResetSerializer',
 }
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',  # Hier kannst du den minimalen Schweregrad festlegen (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'django.request': {
-            'handlers': ['console'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        # Füge hier weitere Logger hinzu, falls benötigt, z.B. für deine Apps
-    },
-}
