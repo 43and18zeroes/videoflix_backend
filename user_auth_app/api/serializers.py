@@ -25,7 +25,6 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
     
-    from dj_rest_auth.serializers import PasswordResetSerializer
 
 class CustomPasswordResetSerializer(PasswordResetSerializer):
     def get_email_options(self):
