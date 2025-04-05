@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer, EmailConfirmationSerializer, SetPasswordSerializer, LoginSerializer
+from .serializers import UserSerializer, EmailConfirmationSerializer, SetPasswordSerializer, LoginSerializer, CustomPasswordResetSerializer
 from user_auth_app.models import CustomUser
 from django.core.mail import send_mail
 from django.conf import settings
@@ -11,7 +11,6 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from dj_rest_auth.views import PasswordResetView
-from user_auth_app.api.serializers import CustomPasswordResetSerializer
 
 @api_view(['POST'])
 def register_user(request):

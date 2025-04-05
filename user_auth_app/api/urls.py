@@ -8,5 +8,6 @@ urlpatterns = [
     path('set-password/', views.set_password, name='set_password'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('login/', views.LoginView.as_view(), name='login')
+    path('login/', views.LoginView.as_view(), name='login'),
+    path('password-reset/', views.CustomPasswordResetView.as_view(), name="password_reset"),
 ]
