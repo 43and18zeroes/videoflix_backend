@@ -3,6 +3,7 @@ from user_auth_app.models import CustomUser
 from rest_framework import serializers
 from dj_rest_auth.serializers import PasswordResetSerializer
 from django.contrib.auth.tokens import default_token_generator
+from django.conf import settings
 
 import logging
 logger = logging.getLogger(__name__)
@@ -32,7 +33,7 @@ class LoginSerializer(serializers.Serializer):
 class CustomPasswordResetSerializer(PasswordResetSerializer):
     def get_email_options(self):
         request = self.context.get('request')
-        domain = request.get_host()
+        domain = settings.FRONTEND_URL.split('://')[1] if '://' in settings.FRONTEND_URL else settings.FRONTEND_URL
         protocol = 'https' if request.is_secure() else 'http'
 
         user = list(self.reset_form.get_users(self.data["email"]))[0]
