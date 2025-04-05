@@ -38,13 +38,13 @@ class CustomPasswordResetSerializer(PasswordResetSerializer):
         user = list(self.reset_form.get_users(self.data["email"]))[0]
         uid = user.pk
         token = default_token_generator.make_token(user)
-        password_reset_url = f"{protocol}://{domain}/neuer-pfad-im-frontend/reset-password/{uid}/{token}/"
+        password_reset_url = f"{protocol}://{domain}/password-reset/{uid}/{token}/"
 
         return {
             'subject_template_name': 'registration/password_reset_subject.txt',
             'email_template_name': 'registration/password_reset_email.html',
             'html_email_template_name': 'registration/password_reset_email.html',
-            'extra_email_context': {  # ← Korrektur hier
+            'extra_email_context': {
                 'password_reset_url': password_reset_url,
                 'site_name': 'Videoflix',
                 'user': user,
