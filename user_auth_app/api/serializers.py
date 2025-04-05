@@ -4,6 +4,9 @@ from rest_framework import serializers
 from dj_rest_auth.serializers import PasswordResetSerializer
 from django.contrib.auth.tokens import default_token_generator
 
+import logging
+logger = logging.getLogger(__name__)
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -29,21 +32,22 @@ class LoginSerializer(serializers.Serializer):
 class CustomPasswordResetSerializer(PasswordResetSerializer):
     def get_email_options(self):
         request = self.context.get('request')
-        site = request.site
-        domain = site.domain
+        domain = request.get_host()
         protocol = 'https' if request.is_secure() else 'http'
-        uid = self.user.pk
-        token = default_token_generator.make_token(self.user)
-        password_reset_url = f"{protocol}://{domain}/neuer-pfad-im-frontend/reset-password/{uid}/{token}/"  # Passe den Pfad an dein Frontend an
+
+        user = list(self.reset_form.get_users(self.data["email"]))[0]
+        uid = user.pk
+        token = default_token_generator.make_token(user)
+        password_reset_url = f"{protocol}://{domain}/neuer-pfad-im-frontend/reset-password/{uid}/{token}/"
 
         return {
-            'subject_template_name': 'registration/password_reset_subject.txt',  # Optional: Betreff-Template
+            'subject_template_name': 'registration/password_reset_subject.txt',
             'email_template_name': 'registration/password_reset_email.html',
-            'html_email_template_name': 'registration/password_reset_email.html', # Für HTML-Mails
-            'context': {
+            'html_email_template_name': 'registration/password_reset_email.html',
+            'extra_email_context': {  # ← Korrektur hier
                 'password_reset_url': password_reset_url,
-                'site_name': site.name,
-                'user': self.user,
+                'site_name': 'Videoflix',
+                'user': user,
                 'uid': uid,
                 'token': token,
                 'protocol': protocol,
