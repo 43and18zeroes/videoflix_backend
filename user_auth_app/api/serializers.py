@@ -75,7 +75,7 @@ class CustomPasswordResetConfirmSerializer(serializers.Serializer):
             raise serializers.ValidationError({"new_password2": ["The two password fields didn't match."]})
 
         try:
-            user_pk = int(uid)  # Direkt in einen Integer konvertieren
+            user_pk = int(uid)
             self.user = User.objects.get(pk=user_pk)
         except (ValueError, User.DoesNotExist):
             raise serializers.ValidationError({"uid": ["Invalid value"]})
