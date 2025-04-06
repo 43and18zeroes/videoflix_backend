@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#e0yu)w0o$wsu67!(4@-=708jk$*_fzo@*g077&7#c+w)e^(@@'
+SECRET_KEY = "django-insecure-#e0yu)w0o$wsu67!(4@-=708jk$*_fzo@*g077&7#c+w)e^(@@"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,50 +32,52 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'dj_rest_auth',
-    'corsheaders',
-    'rest_framework_simplejwt',
-    'user_auth_app',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "dj_rest_auth",
+    "corsheaders",
+    "rest_framework_simplejwt",
+    "user_auth_app",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
-ROOT_URLCONF = 'videoflix.urls'
+ROOT_URLCONF = "videoflix.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [Path(__file__).resolve().parent.parent / 'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [
+            BASE_DIR / "user_auth_app" / "templates",
+        ],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'videoflix.wsgi.application'
+WSGI_APPLICATION = "videoflix.wsgi.application"
 
 
 # Database
@@ -90,16 +92,16 @@ WSGI_APPLICATION = 'videoflix.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'videoflix_database',  # Ersetze durch deinen Datenbanknamen
-        'USER': 'postgres',  # Ersetze durch deinen Benutzernamen
-        'PASSWORD': 'n1n3!Cl34n1n6',  # Ersetze durch dein Passwort
-        'HOST': 'localhost',  # Oder die IP-Adresse des PostgreSQL-Servers
-        'PORT': '5432',  # Standard-PostgreSQL-Port
-        'OPTIONS': {
-            'client_encoding': 'UTF8',
-        }
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "videoflix_database",  # Ersetze durch deinen Datenbanknamen
+        "USER": "postgres",  # Ersetze durch deinen Benutzernamen
+        "PASSWORD": "n1n3!Cl34n1n6",  # Ersetze durch dein Passwort
+        "HOST": "localhost",  # Oder die IP-Adresse des PostgreSQL-Servers
+        "PORT": "5432",  # Standard-PostgreSQL-Port
+        "OPTIONS": {
+            "client_encoding": "UTF8",
+        },
     }
 }
 
@@ -109,16 +111,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -126,9 +128,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -138,31 +140,31 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
 ]
 
-FRONTEND_URL = 'http://localhost:4200'
-DEFAULT_FROM_EMAIL = 'videoflix@cw-coding.de'
+FRONTEND_URL = "http://localhost:4200"
+DEFAULT_FROM_EMAIL = "videoflix@cw-coding.de"
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'w01c0cb4.kasserver.com'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "w01c0cb4.kasserver.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'videoflix@cw-coding.de'
-EMAIL_HOST_PASSWORD = '63lD!k4mp46n3'
+EMAIL_HOST_USER = "videoflix@cw-coding.de"
+EMAIL_HOST_PASSWORD = "63lD!k4mp46n3"
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ],
 }
 
@@ -176,11 +178,11 @@ REST_AUTH = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
-AUTH_USER_MODEL = 'user_auth_app.CustomUser'
+AUTH_USER_MODEL = "user_auth_app.CustomUser"
 
 REST_AUTH_SERIALIZERS = {
-    'PASSWORD_RESET_SERIALIZER': 'user_auth_app.api.serializers.CustomPasswordResetSerializer',
+    "PASSWORD_RESET_SERIALIZER": "user_auth_app.api.serializers.CustomPasswordResetSerializer",
 }
