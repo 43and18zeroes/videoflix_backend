@@ -4,8 +4,10 @@ from rest_framework import serializers
 from dj_rest_auth.serializers import PasswordResetSerializer
 from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
-
 import logging
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth import get_user_model
+User = get_user_model()
 logger = logging.getLogger(__name__)
 
 class UserSerializer(serializers.ModelSerializer):
@@ -55,3 +57,38 @@ class CustomPasswordResetSerializer(PasswordResetSerializer):
                 'domain': domain,
             }
         }
+
+
+class CustomPasswordResetConfirmSerializer(serializers.Serializer):
+    uid = serializers.CharField(write_only=True)
+    token = serializers.CharField(write_only=True)
+    new_password1 = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    new_password2 = serializers.CharField(write_only=True, style={'input_type': 'password'})
+
+    def validate(self, attrs):
+        uid = attrs.get('uid')
+        token = attrs.get('token')
+        new_password1 = attrs.get('new_password1')
+        new_password2 = attrs.get('new_password2')
+
+        if new_password1 != new_password2:
+            raise serializers.ValidationError({"new_password2": ["The two password fields didn't match."]})
+
+        try:
+            user_pk = int(uid)  # Direkt in einen Integer konvertieren
+            self.user = User.objects.get(pk=user_pk)
+        except (ValueError, User.DoesNotExist):
+            raise serializers.ValidationError({"uid": ["Invalid value"]})
+
+        if not default_token_generator.check_token(self.user, token):
+            raise serializers.ValidationError({"token": ["Invalid token"]})
+
+        attrs['user'] = self.user
+        return attrs
+
+    def save(self):
+        user = self.validated_data['user']
+        new_password = self.validated_data['new_password1']
+        user.set_password(new_password)
+        user.save()
+        return user

@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import UserSerializer, EmailConfirmationSerializer, SetPasswordSerializer, LoginSerializer, CustomPasswordResetSerializer
+from .serializers import UserSerializer, EmailConfirmationSerializer, SetPasswordSerializer, LoginSerializer, CustomPasswordResetSerializer, CustomPasswordResetConfirmSerializer
 from user_auth_app.models import CustomUser
 from django.core.mail import send_mail
 from django.conf import settings
@@ -76,3 +76,15 @@ class LoginView(APIView):
 
 class CustomPasswordResetView(PasswordResetView):
     serializer_class = CustomPasswordResetSerializer
+    
+
+class CustomPasswordResetConfirmView(APIView):
+    serializer_class = CustomPasswordResetConfirmSerializer
+    permission_classes = []
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({'detail': 'Password reset successfully.'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
