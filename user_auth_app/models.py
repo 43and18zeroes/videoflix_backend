@@ -10,8 +10,13 @@ class CustomUser(AbstractUser):
     email_confirmed = models.BooleanField(default=False)
     confirmation_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    # Vor der Superuser Änderung
+    # USERNAME_FIELD = 'email'
+    # REQUIRED_FIELDS = []
+    
+    # Vor der Superuser Änderung
+    USERNAME_FIELD = 'username'  # ÄNDERUNG HIER
+    REQUIRED_FIELDS = ['email']  # Füge 'email' zu den benötigten Feldern hinzu
 
     groups = models.ManyToManyField(
         'auth.Group',
