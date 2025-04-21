@@ -10,5 +10,5 @@ def video_post_save(sender, instance, created, **kwargs):
     if created:
         print('New video created')
         source_path = instance.video_file.path
-        print(f"Quellpfad: {source_path}")  # Testausgabe
+        print(f"Path: {source_path}")  # Testausgabe
         convert_480p(source_path)
