@@ -18,7 +18,7 @@ class Video(models.Model):
     category = models.CharField(
         max_length=20,
         choices=CATEGORY_CHOICES,
-        default='new',  # Optional: Standardkategorie
+        default='new',
     )
 
     def __str__(self):
