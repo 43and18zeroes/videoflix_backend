@@ -3,10 +3,12 @@ from rest_framework.response import Response
 from django.db.models import Prefetch
 from videos.models import Video
 from .serializers import VideoSerializer
+from rest_framework.permissions import IsAuthenticated
 
 class VideoViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VideoSerializer
     queryset = Video.objects.all().order_by('-upload_date') # Standardmäßige Sortierung nach neuestem zuerst
+    permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
