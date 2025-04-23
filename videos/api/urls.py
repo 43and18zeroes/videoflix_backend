@@ -7,4 +7,5 @@ router.register(r'videos', views.VideoViewSet, basename='video')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('videos/<int:video_id>/play/', views.get_video_url, name='get_video_url'),
 ]

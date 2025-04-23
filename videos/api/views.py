@@ -1,9 +1,10 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from django.db.models import Prefetch
 from videos.models import Video
 from .serializers import VideoSerializer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
 
 class VideoViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VideoSerializer
@@ -36,3 +37,13 @@ class VideoViewSet(viewsets.ReadOnlyModelViewSet):
         # Konvertieren Sie das Dictionary in eine Liste von Sections im gewünschten Format
         sections_list = list(sections_data.values())
         return Response(sections_list)
+    
+
+@api_view(['GET'])
+def get_video_url(request, video_id):
+    try:
+        video = Video.objects.get(pk=video_id)
+        video_url = request.build_absolute_uri(video.video_file.url)
+        return Response({'videoUrl': video_url})
+    except Video.DoesNotExist:
+        return Response({'error': 'Video not found'}, status=status.HTTP_404_NOT_FOUND)
