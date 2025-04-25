@@ -1,18 +1,16 @@
 from rest_framework import serializers
 from videos.models import Video
+from django.conf import settings
 
 class VideoSerializer(serializers.ModelSerializer):
-    thumbnail_url = serializers.SerializerMethodField()
-    video_url = serializers.SerializerMethodField()
+    hls_playlist_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Video
-        fields = ['id', 'title', 'thumbnail_url', 'video_url', 'category']
+        fields = ['id', 'title', 'description', 'upload_date', 'video_file', 'thumbnail', 'duration', 'views', 'hls_playlist_url', 'category']
+        read_only_fields = ['id', 'upload_date', 'views', 'hls_playlist_url'] # hls_playlist_url wird per Methode generiert
 
-    def get_thumbnail_url(self, obj):
-        if obj.thumbnail:
-            return self.context['request'].build_absolute_uri(obj.thumbnail.url)
+    def get_hls_playlist_url(self, obj):
+        if obj.hls_playlist_url:
+            return self.context['request'].build_absolute_uri(f'{settings.MEDIA_URL}{obj.hls_playlist_url}')
         return None
-
-    def get_video_url(self, obj):
-        return self.context['request'].build_absolute_uri(obj.video_file.url)
