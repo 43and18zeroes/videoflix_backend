@@ -8,7 +8,9 @@ class Video(models.Model):
     thumbnail = models.ImageField(upload_to='thumbnails/', blank=True, null=True)
     duration = models.PositiveIntegerField(blank=True, null=True, help_text="Dauer in Sekunden")
     views = models.PositiveIntegerField(default=0)
-    
+
+    hls_playlist_url = models.URLField(blank=True, null=True)
+
     CATEGORY_CHOICES = [
         ('new', 'New on Videoflix'),
         ('documentary', 'Documentary'),
