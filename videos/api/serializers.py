@@ -4,6 +4,7 @@ from django.conf import settings
 
 class VideoSerializer(serializers.ModelSerializer):
     hls_playlist_url = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()  # <-- hier änderst du es
 
     class Meta:
         model = Video
@@ -14,3 +15,6 @@ class VideoSerializer(serializers.ModelSerializer):
         if obj.hls_playlist_url:
             return self.context['request'].build_absolute_uri(f'{settings.MEDIA_URL}{obj.hls_playlist_url}')
         return None
+    
+    def get_category(self, obj):
+        return obj.get_category_display()
