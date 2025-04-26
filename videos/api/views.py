@@ -14,6 +14,25 @@ class VideoListView(generics.ListAPIView):
 class VideoDetailView(generics.RetrieveAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
+    
+
+@api_view(['GET'])
+def get_video_urls(request, pk):
+    try:
+        video = get_object_or_404(Video, pk=pk)
+        video_urls = {}
+        if video.video_file:
+            video_urls['original'] = request.build_absolute_uri(f'{settings.MEDIA_URL}{video.video_file}')
+        if video.video_file_480p:
+            video_urls['480p'] = request.build_absolute_uri(f'{settings.MEDIA_URL}{video.video_file_480p}')
+        if video.video_file_720p:
+            video_urls['720p'] = request.build_absolute_uri(f'{settings.MEDIA_URL}{video.video_file_720p}')
+        if video.video_file_1080p:
+            video_urls['1080p'] = request.build_absolute_uri(f'{settings.MEDIA_URL}{video.video_file_1080p}')
+        return Response(video_urls)
+    except Exception as e:
+        return Response({'error': f'Error retrieving video URLs: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
 
 @api_view(['GET'])
 def play_video(request, pk):
