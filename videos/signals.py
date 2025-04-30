@@ -1,23 +1,22 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from .models import Video
-from .tasks import convert_video
+from django.conf import settings
+import os
 
-RESOLUTIONS_TO_FIELDS = {
-    "854x480": "video_file_480p",
-    "1280x720": "video_file_720p",
-    "1920x1080": "video_file_1080p",
-}
+from .tasks import convert_to_hls  # ggf. anpassen
 
 @receiver(post_save, sender=Video)
 def video_post_save(sender, instance, created, **kwargs):
-    print('Video saved')
-    if created:
-        print('New video created')
+    if created and instance.video_file:
+        print('Neues Video wurde hochgeladen. Starte HLS-Konvertierung...')
         source_path = instance.video_file.path
-        print(f"Path: {source_path}")
-        for resolution, field_name in RESOLUTIONS_TO_FIELDS.items():
-            relative_path = convert_video(source_path, resolution)
-            if relative_path:
-                setattr(instance, field_name, relative_path)
-        instance.save()
+        print(f"Pfad zur Quelldatei: {source_path}")
+
+        hls_relative_path = convert_to_hls(source_path)
+        if hls_relative_path:
+            instance.hls_playlist_url = hls_relative_path
+            instance.save()
+            print(f"HLS-Konvertierung abgeschlossen: {hls_relative_path}")
+        else:
+            print("HLS-Konvertierung fehlgeschlagen.")
