@@ -9,7 +9,7 @@ class Video(models.Model):
     duration = models.PositiveIntegerField(blank=True, null=True, help_text="Dauer in Sekunden")
     views = models.PositiveIntegerField(default=0)
 
-    hls_playlist_url = models.CharField(max_length=255, blank=True, null=True) # Für HLS falls du es später nutzen willst
+    hls_playlist_url = models.CharField(max_length=255, blank=True, null=True)
 
     video_file_480p = models.CharField(max_length=255, blank=True, null=True)
     video_file_720p = models.CharField(max_length=255, blank=True, null=True)

@@ -11,7 +11,7 @@ def convert_video(source, resolution):
     os.makedirs(target_dir, exist_ok=True)
     target_name = f"{os.path.basename(filename)}-{resolution}.mp4"
     target_path = os.path.join(target_dir, target_name)
-    relative_path = os.path.join('videos', 'converted', target_name) # Relativer Pfad für Modell
+    relative_path = os.path.join('videos', 'converted', target_name)
 
     cmd = f'ffmpeg -i "{source}" -s {width}x{height} -c:v libx264 -crf 23 -c:a aac -strict -2 "{target_path}"'
     try:

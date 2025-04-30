@@ -9,7 +9,7 @@ class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
         fields = ['id', 'title', 'description', 'upload_date', 'video_file', 'thumbnail', 'duration', 'views', 'hls_playlist_url', 'category']
-        read_only_fields = ['id', 'upload_date', 'views', 'hls_playlist_url'] # hls_playlist_url wird per Methode generiert
+        read_only_fields = ['id', 'upload_date', 'views', 'hls_playlist_url']
 
     def get_hls_playlist_url(self, obj):
         if obj.hls_playlist_url:
