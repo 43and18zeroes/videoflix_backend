@@ -41,7 +41,9 @@ def play_video(request, pk):
     try:
         video = get_object_or_404(Video, pk=pk)
         if video.hls_playlist_url:
-            video_url = request.build_absolute_uri(f'{settings.MEDIA_URL}{video.hls_playlist_url}')
+            # Korrigiere Windows-Backslashes
+            normalized_path = video.hls_playlist_url.replace('\\', '/')
+            video_url = request.build_absolute_uri(f'{settings.MEDIA_URL}{normalized_path}')
             return Response({'videoUrl': video_url})
         else:
             return Response({'error': 'HLS playlist not available for this video'}, status=status.HTTP_404_NOT_FOUND)
