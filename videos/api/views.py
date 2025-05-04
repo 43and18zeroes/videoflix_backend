@@ -7,18 +7,23 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 from videos.tasks import convert_to_hls
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 import os
 
 class VideoListView(generics.ListAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
+    permission_classes = [IsAuthenticated]
 
 class VideoDetailView(generics.RetrieveAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
+    permission_classes = [IsAuthenticated]
     
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_video_urls(request, pk):
     try:
         video = get_object_or_404(Video, pk=pk)
@@ -37,6 +42,7 @@ def get_video_urls(request, pk):
     
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def play_video(request, pk):
     try:
         video = get_object_or_404(Video, pk=pk)
@@ -54,6 +60,7 @@ def play_video(request, pk):
 class VideoCreateView(generics.CreateAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         video = serializer.save()
