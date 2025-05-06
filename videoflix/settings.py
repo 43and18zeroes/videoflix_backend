@@ -99,11 +99,11 @@ WSGI_APPLICATION = "videoflix.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "videoflix_database",  # Ersetze durch deinen Datenbanknamen
-        "USER": "postgres",  # Ersetze durch deinen Benutzernamen
-        "PASSWORD": "n1n3!Cl34n1n6",  # Ersetze durch dein Passwort
-        "HOST": "localhost",  # Oder die IP-Adresse des PostgreSQL-Servers
-        "PORT": "5432",  # Standard-PostgreSQL-Port
+        "NAME": "videoflix_database",
+        "USER": "postgres",
+        "PASSWORD": "n1n3!Cl34n1n6",
+        "HOST": "localhost",
+        "PORT": "5432",
         "OPTIONS": {
             "client_encoding": "UTF8",
         },
