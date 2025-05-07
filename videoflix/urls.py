@@ -25,6 +25,7 @@ urlpatterns = [
     path('auth/', include('user_auth_app.api.urls')),
     path("api/v1/auth/", include("dj_rest_auth.urls")),
     path('api/', include('videos.api.urls')),
-] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+]
 
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()
