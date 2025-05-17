@@ -59,6 +59,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
 ]
 
+
 ROOT_URLCONF = "videoflix.urls"
 
 TEMPLATES = [
