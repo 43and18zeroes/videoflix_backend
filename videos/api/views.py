@@ -7,6 +7,9 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 from videos.tasks import convert_to_hls
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
+from .serializers import VideoUploadSerializer
 import os
 
 class VideoListView(generics.ListAPIView):
@@ -62,3 +65,14 @@ class VideoCreateView(generics.CreateAPIView):
         if hls_relative_path:
             video.hls_playlist_url = hls_relative_path
             video.save()
+            
+
+class VideoUploadView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        serializer = VideoUploadSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
