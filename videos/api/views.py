@@ -71,6 +71,7 @@ class VideoUploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, *args, **kwargs):
+        print("VideoUploadView post start")
         serializer = VideoUploadSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
