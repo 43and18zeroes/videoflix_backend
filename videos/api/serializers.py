@@ -87,7 +87,7 @@ class VideoUploadSerializer(serializers.ModelSerializer):
                 '-ar', '48000',
                 '-c:v', 'libx264',
                 '-crf', '22',
-                '-preset', 'slow',
+                '-preset', 'veryfast',
                 '-hls_time', '10',
                 '-hls_playlist_type', 'event',
                 '-hls_segment_filename', segment_path,
