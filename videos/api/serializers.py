@@ -4,6 +4,8 @@ from django.conf import settings
 import logging
 import subprocess
 import os
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 
 logger = logging.getLogger(__name__)
 
@@ -33,27 +35,28 @@ class VideoUploadSerializer(serializers.ModelSerializer):
         fields = ('title', 'description', 'video_file')
 
     def create(self, validated_data):
-        logger.info("VideoUploadSerializer.create() start")
+        logger.info("create() gestartet")
 
         video_file = validated_data.pop('video_file')
         video = Video.objects.create(**validated_data)
 
-        # Datei ans Model hängen und speichern
-        video.video_file = video_file
+        # Datei dauerhaft speichern
+        file_path = default_storage.save(f"videos/{video_file.name}", ContentFile(video_file.read()))
+        video.video_file.name = file_path
         video.save()
+        logger.info(f"Video-Datei gespeichert unter: {file_path}")
 
         try:
             self.process_video(video)
         except subprocess.CalledProcessError as e:
-            logger.error(f"Videoverarbeitung fehlgeschlagen: {e}")
-            logger.error(f"stdout: {e.stdout}")
-            logger.error(f"stderr: {e.stderr}")
+            logger.error(f"Fehler bei ffmpeg-Verarbeitung: {e}")
+            logger.error(e.stderr.decode())
             raise serializers.ValidationError("Fehler bei der Videoverarbeitung.")
 
         return video
 
     def process_video(self, video):
-        logger.info(f"Starte Videokonvertierung für Video ID {video.id}")
+        logger.info(f"Beginne ffmpeg-Verarbeitung für Video ID {video.id}")
 
         video_path = os.path.join(settings.MEDIA_ROOT, video.video_file.name)
         hls_base_path = os.path.join(settings.MEDIA_ROOT, 'videos', 'hls', str(video.id))
@@ -87,17 +90,21 @@ class VideoUploadSerializer(serializers.ModelSerializer):
                 output_path
             ]
 
-            logger.info(f"Führe ffmpeg aus für {quality}: {command}")
-            subprocess.run(command, check=True, capture_output=True)
+            logger.info(f"Starte ffmpeg für {quality} mit Befehl: {' '.join(command)}")
 
+            result = subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            logger.debug(result.stdout.decode())
+            logger.debug(result.stderr.decode())
+
+            rel_path = os.path.join('videos', 'hls', str(video.id), f'{quality}.m3u8')
             if quality == '1080p':
-                video.video_file_1080p = os.path.join('videos', 'hls', str(video.id), f'{quality}.m3u8')
+                video.video_file_1080p = rel_path
             elif quality == '720p':
-                video.video_file_720p = os.path.join('videos', 'hls', str(video.id), f'{quality}.m3u8')
+                video.video_file_720p = rel_path
             elif quality == '480p':
-                video.video_file_480p = os.path.join('videos', 'hls', str(video.id), f'{quality}.m3u8')
+                video.video_file_480p = rel_path
 
-        # Playlist schreiben
+        # Playlist-Datei schreiben
         with open(playlist_path, 'w') as f:
             f.write("#EXTM3U\n")
             for quality, resolution in resolutions.items():
@@ -107,4 +114,4 @@ class VideoUploadSerializer(serializers.ModelSerializer):
 
         video.hls_playlist_url = os.path.join('videos', 'hls', str(video.id), 'playlist.m3u8')
         video.save()
-        logger.info(f"Videoverarbeitung für Video ID {video.id} abgeschlossen")
+        logger.info(f"ffmpeg-Verarbeitung abgeschlossen für Video ID {video.id}")
