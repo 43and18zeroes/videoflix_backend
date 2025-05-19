@@ -38,10 +38,10 @@ class VideoUploadSerializer(serializers.ModelSerializer):
         logger = logging.getLogger(__name__)
         logger.warning("🔥 Logger funktioniert!")
         logger.info("create() aufgerufen – vor Video.objects.create")
-        logger.info(f"Video erstellt mit ID: {video.id}")
 
         video_file = validated_data.pop('video_file')
-        video = Video.objects.create(**validated_data)
+        video = Video.objects.create(**validated_data)  # <-- Hier wird 'video' definiert
+        logger.info(f"Video erstellt mit ID: {video.id}")
 
         # Datei dauerhaft speichern
         file_path = default_storage.save(f"videos/{video_file.name}", ContentFile(video_file.read()))
@@ -57,6 +57,7 @@ class VideoUploadSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Fehler bei der Videoverarbeitung.")
 
         return video
+
 
     def process_video(self, video):
         logger.info(f"Beginne ffmpeg-Verarbeitung für Video ID {video.id}")
