@@ -66,6 +66,7 @@ class VideoUploadSerializer(serializers.ModelSerializer):
                 '-hls_segment_filename', os.path.join(hls_segments_path, f'{quality}_%05d.ts'),
                 output_path
             ]
+            print("Video path", video_path)
             subprocess.run(command, check=True, capture_output=True)
             if quality == '1080p':
                 video.video_file_1080p = os.path.join('videos', 'hls', str(video.id), f'{quality}.m3u8')
