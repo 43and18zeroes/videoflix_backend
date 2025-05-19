@@ -96,9 +96,7 @@ class VideoUploadSerializer(serializers.ModelSerializer):
 
             logger.info(f"Starte ffmpeg für {quality} mit Befehl: {' '.join(command)}")
 
-            result = subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            logger.debug(result.stdout.decode())
-            logger.debug(result.stderr.decode())
+            result = subprocess.run(command, check=True)
 
             rel_path = os.path.join('videos', 'hls', str(video.id), f'{quality}.m3u8')
             if quality == '1080p':
