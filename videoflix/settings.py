@@ -211,7 +211,7 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-        'your_app_name': {
+        'videos.api.serializers': {
             'handlers': ['file'],
             'level': 'DEBUG',
             'propagate': True,

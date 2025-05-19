@@ -35,7 +35,10 @@ class VideoUploadSerializer(serializers.ModelSerializer):
         fields = ('title', 'description', 'video_file')
 
     def create(self, validated_data):
-        logger.info("create() gestartet")
+        logger = logging.getLogger(__name__)
+        logger.warning("🔥 Logger funktioniert!")
+        logger.info("create() aufgerufen – vor Video.objects.create")
+        logger.info(f"Video erstellt mit ID: {video.id}")
 
         video_file = validated_data.pop('video_file')
         video = Video.objects.create(**validated_data)
