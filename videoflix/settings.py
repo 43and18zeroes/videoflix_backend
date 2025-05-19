@@ -202,7 +202,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/path/to/gunicorn.err.log',
+            'filename': '/var/log/videoflix/gunicorn.err.log',
         },
     },
     'loggers': {
