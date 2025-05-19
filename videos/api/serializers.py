@@ -26,6 +26,7 @@ class VideoUploadSerializer(serializers.ModelSerializer):
         fields = ('title', 'description', 'video_file')
 
     def create(self, validated_data):
+        print("create start")
         video_file = validated_data.pop('video_file')
         video = Video.objects.create(**validated_data)
         # Hier kommt die Logik zur Videoverarbeitung (Konvertierung etc.) hin
@@ -33,6 +34,7 @@ class VideoUploadSerializer(serializers.ModelSerializer):
         return video
 
     def process_video(self, video, video_file):
+        print("process_video start")
         import os
         import subprocess
         from django.conf import settings
