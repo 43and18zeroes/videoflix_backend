@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from videos.models import Video
 from django.conf import settings
+import logging
+import subprocess
+import os
+
+logger = logging.getLogger(__name__)
 
 class VideoSerializer(serializers.ModelSerializer):
     hls_playlist_url = serializers.SerializerMethodField()
@@ -20,24 +25,35 @@ class VideoSerializer(serializers.ModelSerializer):
         return obj.get_category_display()
     
 
+logger = logging.getLogger(__name__)
+
 class VideoUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
         fields = ('title', 'description', 'video_file')
 
     def create(self, validated_data):
-        print("create start")
+        logger.info("VideoUploadSerializer.create() start")
+
         video_file = validated_data.pop('video_file')
         video = Video.objects.create(**validated_data)
-        # Hier kommt die Logik zur Videoverarbeitung (Konvertierung etc.) hin
-        self.process_video(video, video_file)
+
+        # Datei ans Model hängen und speichern
+        video.video_file = video_file
+        video.save()
+
+        try:
+            self.process_video(video)
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Videoverarbeitung fehlgeschlagen: {e}")
+            logger.error(f"stdout: {e.stdout}")
+            logger.error(f"stderr: {e.stderr}")
+            raise serializers.ValidationError("Fehler bei der Videoverarbeitung.")
+
         return video
 
-    def process_video(self, video, video_file):
-        print("process_video start")
-        import os
-        import subprocess
-        from django.conf import settings
+    def process_video(self, video):
+        logger.info(f"Starte Videokonvertierung für Video ID {video.id}")
 
         video_path = os.path.join(settings.MEDIA_ROOT, video.video_file.name)
         hls_base_path = os.path.join(settings.MEDIA_ROOT, 'videos', 'hls', str(video.id))
@@ -54,6 +70,8 @@ class VideoUploadSerializer(serializers.ModelSerializer):
 
         for quality, resolution in resolutions.items():
             output_path = os.path.join(hls_base_path, f'{quality}.m3u8')
+            segment_path = os.path.join(hls_segments_path, f'{quality}_%05d.ts')
+
             command = [
                 'ffmpeg',
                 '-i', video_path,
@@ -65,11 +83,13 @@ class VideoUploadSerializer(serializers.ModelSerializer):
                 '-preset', 'slow',
                 '-hls_time', '10',
                 '-hls_playlist_type', 'event',
-                '-hls_segment_filename', os.path.join(hls_segments_path, f'{quality}_%05d.ts'),
+                '-hls_segment_filename', segment_path,
                 output_path
             ]
-            print("Video path", video_path)
+
+            logger.info(f"Führe ffmpeg aus für {quality}: {command}")
             subprocess.run(command, check=True, capture_output=True)
+
             if quality == '1080p':
                 video.video_file_1080p = os.path.join('videos', 'hls', str(video.id), f'{quality}.m3u8')
             elif quality == '720p':
@@ -77,6 +97,7 @@ class VideoUploadSerializer(serializers.ModelSerializer):
             elif quality == '480p':
                 video.video_file_480p = os.path.join('videos', 'hls', str(video.id), f'{quality}.m3u8')
 
+        # Playlist schreiben
         with open(playlist_path, 'w') as f:
             f.write("#EXTM3U\n")
             for quality, resolution in resolutions.items():
@@ -86,3 +107,4 @@ class VideoUploadSerializer(serializers.ModelSerializer):
 
         video.hls_playlist_url = os.path.join('videos', 'hls', str(video.id), 'playlist.m3u8')
         video.save()
+        logger.info(f"Videoverarbeitung für Video ID {video.id} abgeschlossen")

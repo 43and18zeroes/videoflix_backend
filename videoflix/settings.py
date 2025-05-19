@@ -194,3 +194,27 @@ AUTH_USER_MODEL = "user_auth_app.CustomUser"
 REST_AUTH_SERIALIZERS = {
     "PASSWORD_RESET_SERIALIZER": "user_auth_app.api.serializers.CustomPasswordResetSerializer",
 }
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/path/to/gunicorn.err.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'your_app_name': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

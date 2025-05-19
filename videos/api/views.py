@@ -11,6 +11,8 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import VideoUploadSerializer
 import os
+import logging
+logger = logging.getLogger(__name__)
 
 class VideoListView(generics.ListAPIView):
     queryset = Video.objects.all()
@@ -71,7 +73,7 @@ class VideoUploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, *args, **kwargs):
-        print("VideoUploadView post start")
+        logger.info(f"VideoUploadView post start")
         serializer = VideoUploadSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
