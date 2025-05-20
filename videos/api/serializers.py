@@ -32,31 +32,38 @@ logger = logging.getLogger(__name__)
 class VideoUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
-        fields = ('title', 'description', 'video_file')
+        fields = ('title', 'description', 'video_file', 'thumbnail')
 
     def create(self, validated_data):
         logger = logging.getLogger(__name__)
-        logger.warning("🔥 Logger funktioniert!")
         logger.info("create() aufgerufen – vor Video.objects.create")
 
         video_file = validated_data.pop('video_file')
-        video = Video.objects.create(**validated_data)  # <-- Hier wird 'video' definiert
+        thumbnail = validated_data.pop('thumbnail', None)  # 👈 Thumbnail optional extrahieren
+
+        video = Video.objects.create(**validated_data)
         logger.info(f"Video erstellt mit ID: {video.id}")
 
-        # Datei dauerhaft speichern
+        # Video-Datei speichern
         file_path = default_storage.save(f"videos/{video_file.name}", ContentFile(video_file.read()))
         video.video_file.name = file_path
+
+        # Thumbnail speichern, falls vorhanden
+        if thumbnail:
+            thumb_path = default_storage.save(f"thumbnails/{thumbnail.name}", ContentFile(thumbnail.read()))
+            video.thumbnail.name = thumb_path
+            logger.info(f"Thumbnail gespeichert unter: {thumb_path}")
+
         video.save()
-        logger.info(f"Video-Datei gespeichert unter: {file_path}")
 
         try:
             self.process_video(video)
         except subprocess.CalledProcessError as e:
-            logger.error(f"Fehler bei ffmpeg-Verarbeitung: {e}")
-            logger.error(e.stderr.decode())
+            logger.error(f"Fehler bei ffmpeg: {e}")
             raise serializers.ValidationError("Fehler bei der Videoverarbeitung.")
 
         return video
+
 
 
     def process_video(self, video):
