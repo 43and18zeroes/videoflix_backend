@@ -72,7 +72,7 @@ class VideoUploadSerializer(serializers.ModelSerializer):
             '480p': '854x480',
         }
 
-        hls_segments_path = os.path.join(hls_base_path, '%v')
+        hls_segments_path = hls_base_path
         playlist_path = os.path.join(hls_base_path, 'playlist.m3u8')
 
         for quality, resolution in resolutions.items():
