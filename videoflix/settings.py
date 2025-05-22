@@ -158,6 +158,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
+    "https://hlsjs.video-dev.org/demo/"
 ]
 
 FRONTEND_URL = "http://localhost:4200"
