@@ -116,10 +116,19 @@ class VideoUploadSerializer(serializers.ModelSerializer):
         # Playlist-Datei schreiben
         with open(playlist_path, 'w') as f:
             f.write("#EXTM3U\n")
+            f.write("#EXT-X-VERSION:3\n")
+            
+            quality_bandwidths = {
+                '1080p': 5000000,
+                '720p': 3000000,
+                '480p': 1000000,
+            }
+
             for quality, resolution in resolutions.items():
-                f.write(f"#EXT-X-MEDIA:TYPE=VIDEO,GROUP-ID=\"v{quality}\",NAME=\"{quality}\",AUTOSELECT=YES,DEFAULT=NO\n")
-                f.write(f"#EXT-X-STREAM-INF:BANDWIDTH=1280000,RESOLUTION={resolution},CODECS=\"avc1.4d001f,mp4a.40.2\",MEDIA=\"v{quality}\"\n")
+                bandwidth = quality_bandwidths[quality]
+                f.write(f"#EXT-X-STREAM-INF:BANDWIDTH={bandwidth},RESOLUTION={resolution},CODECS=\"avc1.4d001f,mp4a.40.2\"\n")
                 f.write(f"{quality}.m3u8\n")
+
 
         video.hls_playlist_url = os.path.join('videos', 'hls', str(video.id), 'playlist.m3u8')
         video.save()
