@@ -162,7 +162,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://videoflix.cw-coding.de",
 ]
 
-FRONTEND_URL = "http://localhost:4200"
+FRONTEND_URL = "https://videoflix.cw-coding.de"
 DEFAULT_FROM_EMAIL = "videoflix@cw-coding.de"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
