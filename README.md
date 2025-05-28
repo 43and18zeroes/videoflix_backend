@@ -4,7 +4,7 @@ This README provides instructions for setting up and running your Django backend
 
 > [!NOTE]
 > The corresponding frontend for this backend can be found here:
-> **https://github.com/43and18zeroes/videoflix_frontend**
+> <a href="https://github.com/43and18zeroes/videoflix_frontend" target="_blank">**https://github.com/43and18zeroes/videoflix_frontend**</a>
 
 ---
 
