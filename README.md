@@ -2,6 +2,10 @@
 
 This README provides instructions for setting up and running your Django backend, which handles video uploads, conversions to different resolutions, and serves video URLs. It's configured to use PostgreSQL as its database.
 
+> [!NOTE]
+> The corresponding frontend for this backend can be found here:
+> **https://github.com/43and18zeroes/videoflix_frontend**
+
 ---
 
 ## 1. Prerequisites
