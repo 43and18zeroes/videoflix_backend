@@ -38,6 +38,7 @@ def send_confirmation_email(sender, instance, created, **kwargs):
 
             <a
               href="{confirmation_link}" 
+              target="_blank"
               style="
                 display: inline-block;
                 font-weight: 700;
