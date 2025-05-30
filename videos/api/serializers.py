@@ -62,9 +62,6 @@ class VideoUploadSerializer(serializers.ModelSerializer):
 
         return video
 
-
-
-
     def process_video(self, video):
         logger.info(f"Beginne ffmpeg-Verarbeitung für Video ID {video.id}")
 
