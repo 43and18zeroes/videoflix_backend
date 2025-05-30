@@ -78,10 +78,10 @@ class CustomPasswordResetConfirmSerializer(serializers.Serializer):
             user_pk = int(uid)
             self.user = User.objects.get(pk=user_pk)
         except (ValueError, User.DoesNotExist):
-            raise serializers.ValidationError({"uid": ["Invalid value"]})
+            raise serializers.ValidationError({"uid": ["User not found"]})
 
         if not default_token_generator.check_token(self.user, token):
-            raise serializers.ValidationError({"token": ["Invalid token"]})
+            raise serializers.ValidationError({"token": ["Invalid or expired token"]})
 
         attrs['user'] = self.user
         return attrs

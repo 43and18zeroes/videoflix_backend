@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from dj_rest_auth.views import PasswordResetView
+HTTP_422_UNPROCESSABLE_ENTITY = 422
 
 @api_view(['POST'])
 def register_user(request):
@@ -24,20 +25,29 @@ def register_user(request):
 def confirm_email(request):
     serializer = EmailConfirmationSerializer(data=request.data)
     if serializer.is_valid():
-        token = serializer.validated_data['token']
-        user = get_object_or_404(CustomUser, confirmation_token=token)
+        try:
+            token = serializer.validated_data['token']
+            user = CustomUser.objects.get(confirmation_token=token)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'Invalid confirmation token'}, status=status.HTTP_404_NOT_FOUND)
+
         user.email_confirmed = True
         user.save()
         return Response({'message': 'Email confirmed'}, status=status.HTTP_200_OK)
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def set_password(request):
     serializer = SetPasswordSerializer(data=request.data)
     if serializer.is_valid():
-        token = serializer.validated_data['token']
-        password = serializer.validated_data['password']
-        user = get_object_or_404(CustomUser, confirmation_token=token)
+        try:
+            token = serializer.validated_data['token']
+            password = serializer.validated_data['password']
+            user = CustomUser.objects.get(confirmation_token=token)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'Invalid confirmation token'}, status=status.HTTP_404_NOT_FOUND)
+
         user.password = make_password(password)
         user.save()
         refresh = RefreshToken.for_user(user)
@@ -45,7 +55,8 @@ def set_password(request):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }, status=status.HTTP_200_OK)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response(serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
 class LoginView(APIView):
@@ -87,4 +98,4 @@ class CustomPasswordResetConfirmView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             return Response({'detail': 'Password reset successfully.'}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=HTTP_422_UNPROCESSABLE_ENTITY)
