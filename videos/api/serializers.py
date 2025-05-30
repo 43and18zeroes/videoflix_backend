@@ -35,20 +35,17 @@ class VideoUploadSerializer(serializers.ModelSerializer):
         fields = ('title', 'description', 'video_file', 'thumbnail')
 
     def create(self, validated_data):
-        logger = logging.getLogger(__name__)
         logger.info("create() aufgerufen – vor Video.objects.create")
 
         video_file = validated_data.pop('video_file')
-        thumbnail = validated_data.pop('thumbnail', None)  # 👈 Thumbnail optional extrahieren
+        thumbnail = validated_data.pop('thumbnail', None)
 
         video = Video.objects.create(**validated_data)
         logger.info(f"Video erstellt mit ID: {video.id}")
 
-        # Video-Datei speichern
         file_path = default_storage.save(f"videos/{video_file.name}", ContentFile(video_file.read()))
         video.video_file.name = file_path
 
-        # Thumbnail speichern, falls vorhanden
         if thumbnail:
             thumb_path = default_storage.save(f"thumbnails/{thumbnail.name}", ContentFile(thumbnail.read()))
             video.thumbnail.name = thumb_path
@@ -59,10 +56,12 @@ class VideoUploadSerializer(serializers.ModelSerializer):
         try:
             self.process_video(video)
         except subprocess.CalledProcessError as e:
-            logger.error(f"Fehler bei ffmpeg: {e}")
-            raise serializers.ValidationError("Fehler bei der Videoverarbeitung.")
+            logger.error(f"ffmpeg fehlgeschlagen: {e}")
+            # Kein ValidationError – stattdessen expliziter 422 Fehler
+            raise serializers.APIException(detail="Videoverarbeitung fehlgeschlagen (ffmpeg)", code=422)
 
         return video
+
 
 
 

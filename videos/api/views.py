@@ -12,6 +12,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import VideoUploadSerializer
 import os
 import logging
+from rest_framework.exceptions import NotFound
 logger = logging.getLogger(__name__)
 
 class VideoListView(generics.ListAPIView):
@@ -36,24 +37,31 @@ def get_video_urls(request, pk):
             video_urls['720p'] = request.build_absolute_uri(f'{settings.MEDIA_URL}{video.video_file_720p}')
         if video.video_file_1080p:
             video_urls['1080p'] = request.build_absolute_uri(f'{settings.MEDIA_URL}{video.video_file_1080p}')
-        return Response(video_urls)
+        return Response(video_urls, status=status.HTTP_200_OK)
+    
+    except Video.DoesNotExist:
+        raise NotFound("Video not found")
     except Exception as e:
-        return Response({'error': f'Error retrieving video URLs: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.exception("Unexpected error in get_video_urls")
+        return Response({'error': 'Unexpected error retrieving video URLs'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
 @api_view(['GET'])
 def play_video(request, pk):
     try:
         video = get_object_or_404(Video, pk=pk)
-        if video.hls_playlist_url:
-            # Korrigiere Windows-Backslashes
-            normalized_path = video.hls_playlist_url.replace('\\', '/')
-            video_url = request.build_absolute_uri(f'{settings.MEDIA_URL}{normalized_path}')
-            return Response({'videoUrl': video_url})
-        else:
+        if not video.hls_playlist_url:
             return Response({'error': 'HLS playlist not available for this video'}, status=status.HTTP_404_NOT_FOUND)
+
+        normalized_path = video.hls_playlist_url.replace('\\', '/')
+        video_url = request.build_absolute_uri(f'{settings.MEDIA_URL}{normalized_path}')
+        return Response({'videoUrl': video_url}, status=status.HTTP_200_OK)
+
+    except Video.DoesNotExist:
+        raise NotFound("Video not found")
     except Exception as e:
-        return Response({'error': f'Error retrieving video URL: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.exception("Unexpected error in play_video")
+        return Response({'error': 'Unexpected error retrieving video URL'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     
 # class VideoCreateView(generics.CreateAPIView):
