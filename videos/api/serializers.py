@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import APIException
 from videos.models import Video
 from django.conf import settings
 import logging
@@ -53,12 +54,13 @@ class VideoUploadSerializer(serializers.ModelSerializer):
 
         video.save()
 
-        try:
-            self.process_video(video)
-        except subprocess.CalledProcessError as e:
-            logger.error(f"ffmpeg fehlgeschlagen: {e}")
-            # Kein ValidationError – stattdessen expliziter 422 Fehler
-            raise serializers.APIException(detail="Videoverarbeitung fehlgeschlagen (ffmpeg)", code=422)
+        # ffmpeg nur ausführen, wenn erlaubt (z. B. nicht in Tests)
+        if getattr(settings, "FFMPEG_ENABLED", True):
+            try:
+                self.process_video(video)
+            except subprocess.CalledProcessError as e:
+                logger.error(f"ffmpeg fehlgeschlagen: {e}")
+                raise APIException(detail="Videoverarbeitung fehlgeschlagen (ffmpeg)", code=422)
 
         return video
 
@@ -98,8 +100,7 @@ class VideoUploadSerializer(serializers.ModelSerializer):
             ]
 
             logger.info(f"Starte ffmpeg für {quality} mit Befehl: {' '.join(command)}")
-
-            result = subprocess.run(command, check=True)
+            subprocess.run(command, check=True)
 
             rel_path = os.path.join('videos', 'hls', str(video.id), f'{quality}.m3u8')
             if quality == '1080p':
@@ -109,11 +110,9 @@ class VideoUploadSerializer(serializers.ModelSerializer):
             elif quality == '480p':
                 video.video_file_480p = rel_path
 
-        # Playlist-Datei schreiben
         with open(playlist_path, 'w') as f:
             f.write("#EXTM3U\n")
             f.write("#EXT-X-VERSION:3\n")
-            
             quality_bandwidths = {
                 '1080p': 5000000,
                 '720p': 3000000,
@@ -124,7 +123,6 @@ class VideoUploadSerializer(serializers.ModelSerializer):
                 bandwidth = quality_bandwidths[quality]
                 f.write(f"#EXT-X-STREAM-INF:BANDWIDTH={bandwidth},RESOLUTION={resolution},CODECS=\"avc1.4d001f,mp4a.40.2\"\n")
                 f.write(f"{quality}.m3u8\n")
-
 
         video.hls_playlist_url = os.path.join('videos', 'hls', str(video.id), 'playlist.m3u8')
         video.save()

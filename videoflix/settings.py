@@ -197,6 +197,8 @@ REST_AUTH_SERIALIZERS = {
     "PASSWORD_RESET_SERIALIZER": "user_auth_app.api.serializers.CustomPasswordResetSerializer",
 }
 
+FFMPEG_ENABLED = True
+
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,

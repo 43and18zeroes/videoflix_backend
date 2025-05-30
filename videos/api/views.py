@@ -10,7 +10,7 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import VideoUploadSerializer
-import os
+from django.http import Http404
 import logging
 from rest_framework.exceptions import NotFound
 logger = logging.getLogger(__name__)
@@ -38,9 +38,8 @@ def get_video_urls(request, pk):
         if video.video_file_1080p:
             video_urls['1080p'] = request.build_absolute_uri(f'{settings.MEDIA_URL}{video.video_file_1080p}')
         return Response(video_urls, status=status.HTTP_200_OK)
-    
-    except Video.DoesNotExist:
-        raise NotFound("Video not found")
+    except Http404:
+        return Response({'error': 'Video not found'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         logger.exception("Unexpected error in get_video_urls")
         return Response({'error': 'Unexpected error retrieving video URLs'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
