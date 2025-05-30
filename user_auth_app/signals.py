@@ -19,11 +19,8 @@ def send_confirmation_email(sender, instance, created, **kwargs):
         )
         html_message = f"""
         <html>
-          <head>
-            <title>Confirm your email</title>
-          </head>
+
           <body style="color: #000;">
-          <br>
             <img
               src="http://videoflix.cw-coding.de/mail_logo/videoflix-logo.png"
               alt="Videoflix Logo"
