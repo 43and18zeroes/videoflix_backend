@@ -101,11 +101,11 @@ WSGI_APPLICATION = "videoflix.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "videoflix_database",  # Ersetze durch deinen Datenbanknamen
-        "USER": "postgres",  # Ersetze durch deinen Benutzernamen
-        "PASSWORD": "n1n3!Cl34n1n6",  # Ersetze durch dein Passwort
-        "HOST": "localhost",  # Oder die IP-Adresse des PostgreSQL-Servers
-        "PORT": "5432",  # Standard-PostgreSQL-Port
+        "NAME": "videoflix_database",
+        "USER": "postgres",
+        "PASSWORD": "n1n3!Cl34n1n6",
+        "HOST": "localhost",
+        "PORT": "5432",
         "OPTIONS": {
             "client_encoding": "UTF8",
         },
@@ -158,7 +158,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
-    # "https://hlsjs.video-dev.org/demo/",
     "https://videoflix.cw-coding.de",
 ]
 

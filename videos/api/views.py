@@ -6,7 +6,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.conf import settings
-# from videos.tasks import convert_to_hls
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import VideoUploadSerializer
@@ -61,20 +60,7 @@ def play_video(request, pk):
     except Exception as e:
         logger.exception("Unexpected error in play_video")
         return Response({'error': 'Unexpected error retrieving video URL'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-    
-# class VideoCreateView(generics.CreateAPIView):
-#     queryset = Video.objects.all()
-#     serializer_class = VideoSerializer
-
-#     def perform_create(self, serializer):
-#         video = serializer.save()
-#         abs_path = os.path.join(settings.MEDIA_ROOT, str(video.video_file))
-#         hls_relative_path = convert_to_hls(abs_path)
-#         if hls_relative_path:
-#             video.hls_playlist_url = hls_relative_path
-#             video.save()
-            
+          
 
 class VideoUploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class VideoSerializer(serializers.ModelSerializer):
     hls_playlist_url = serializers.SerializerMethodField()
-    category = serializers.SerializerMethodField()  # <-- hier änderst du es
+    category = serializers.SerializerMethodField()
 
     class Meta:
         model = Video
@@ -54,7 +54,6 @@ class VideoUploadSerializer(serializers.ModelSerializer):
 
         video.save()
 
-        # ffmpeg nur ausführen, wenn erlaubt (z. B. nicht in Tests)
         if getattr(settings, "FFMPEG_ENABLED", True):
             try:
                 self.process_video(video)

@@ -10,20 +10,15 @@ class CustomUser(AbstractUser):
     email_confirmed = models.BooleanField(default=False)
     confirmation_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     
-    # Vor der Superuser Änderung
-    # USERNAME_FIELD = 'email'
-    # REQUIRED_FIELDS = []
-    
-    # Vor der Superuser Änderung
-    USERNAME_FIELD = 'username'  # ÄNDERUNG HIER
-    REQUIRED_FIELDS = ['email']  # Füge 'email' zu den benötigten Feldern hinzu
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
 
     groups = models.ManyToManyField(
         'auth.Group',
         verbose_name='groups',
         blank=True,
         help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
-        related_name="customuser_set",  # related_name hinzufügen
+        related_name="customuser_set",
         related_query_name="user",
     )
     user_permissions = models.ManyToManyField(
@@ -31,7 +26,7 @@ class CustomUser(AbstractUser):
         verbose_name='user permissions',
         blank=True,
         help_text='Specific permissions for this user.',
-        related_name="customuser_permissions_set", # related_name hinzufügen
+        related_name="customuser_permissions_set",
         related_query_name="user",
     )
 

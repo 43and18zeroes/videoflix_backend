@@ -48,14 +48,13 @@ class UserAuthTests(APITestCase):
     def test_set_password_invalid_token(self):
         url = reverse('set_password')
         data = {
-            'token': str(uuid.uuid4()),  # ✅ gültiger, aber nicht existierender Token
+            'token': str(uuid.uuid4()),
             'password': 'test123'
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 404)
 
     def test_login_with_valid_credentials(self):
-        # set password first
         self.user.set_password(self.password)
         self.user.save()
 
